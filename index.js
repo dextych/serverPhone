@@ -1,13 +1,18 @@
     import express from 'express';
     import { port } from './config/config.js'; 
     import { testConnection } from './src/models/index.js';
-
+    import imageRoutes from './src/routes/imageRoutes.js';
 
     const app = express();
 
     app.get('/', (req, res) => {
     res.send('Hello!');
     });
+    
+    app.use(express.json()); // Парсит JSON
+    app.use(express.urlencoded({ extended: true }));
+
+    app.use('/api/images', imageRoutes);
 
     const startServer = async () => {
     try {
