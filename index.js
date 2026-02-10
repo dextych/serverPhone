@@ -1,7 +1,7 @@
     import express from 'express';
     import { port } from './config/config.js'; 
-    import { testConnection } from './src/models/index.js';
-    import imageRoutes from './src/routes/imageRoutes.js';
+    import { testConnection, initializeDatabase } from './src/models/index.js';
+    import { imageAI } from './src/routes/index.js';
 
     const app = express();
 
@@ -12,13 +12,14 @@
     app.use(express.json()); // Парсит JSON
     app.use(express.urlencoded({ extended: true }));
 
-    app.use('/api/images', imageRoutes);
+    app.use('/api/imageAI', imageAI);
 
     const startServer = async () => {
     try {
         // 1. Проверяем подключение к БД
         console.log('🔄 Проверяем подключение к базе данных...');
         await testConnection();
+        await initializeDatabase();
         
         // 2. Запускаем сервер
         app.listen(port, () => {
