@@ -1,18 +1,19 @@
     import express from 'express';
     import { port } from './config/config.js'; 
     import { testConnection, initializeDatabase } from './src/models/index.js';
-    import { imageAI } from './src/routes/index.js';
+    import { imageAI, auth} from './src/routes/index.js';
 
     const app = express();
+    app.use(express.json()); // Парсит JSON
+    app.use(express.urlencoded({ extended: true }));
 
     app.get('/', (req, res) => {
     res.send('Hello!');
     });
     
-    app.use(express.json()); // Парсит JSON
-    app.use(express.urlencoded({ extended: true }));
 
     app.use('/api/imageAI', imageAI);
+    app.use('/api/auth', auth);
 
     const startServer = async () => {
     try {
