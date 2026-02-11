@@ -2,10 +2,7 @@ import jwt from 'jsonwebtoken';
 import { config } from '../../config/config.js';
 import { 
   ValidationError,
-  UnauthorizedError,
-  InvalidTokenError,
-  TokenExpiredError,
-  InternalServerError
+  UnauthorizedError
 } from '../errors/index.js';
 
 export const generateToken = (payload) => {

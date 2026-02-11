@@ -11,6 +11,18 @@ export class ValidationError extends Error {
   }
 }
 
+// 401 - Ошибки авторизации
+export class UnauthorizedError extends Error {
+  constructor(message = 'Требуется авторизация', options = {}) {
+    super(message);
+    this.name = 'UnauthorizedError';
+    this.statusCode = 401;
+    this.code = options.code || 'ERR_UNAUTHORIZED';
+    
+    Error.captureStackTrace(this, this.constructor);
+  }
+}
+
 // 404 - Не найдено
 export class NotFoundError extends Error {
   constructor(message = 'Ресурс не найден', options = {}) {

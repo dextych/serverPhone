@@ -1,7 +1,5 @@
 import fetch from 'node-fetch';
-import { ApiKeyError } from '../errors/index.js';
 import { 
-  AiServiceError,
   ApiKeyError,
   GenerationError,
   NotFoundError,
