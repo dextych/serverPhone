@@ -3,12 +3,12 @@ import { config } from '../../config/config.js';
 
 // Создание экземпляра Sequelize
 const sequelize = new Sequelize(
-  config.database,
-  config.username,
-  config.password,
+  config.db.database,
+  config.db.username,
+  config.db.password,
   {
-    host: config.host,
-    port: config.port,
+    host: config.db.host,
+    port: config.db.port,
     dialect: 'mysql',
     pool: {
       max: 5,

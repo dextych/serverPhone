@@ -2,11 +2,10 @@ import AIImageService from '../../infrastructure/aiImageService.js';
 import { config } from '../../../config/config.js';
 import { ValidationError, ApiKeyError, AiServiceError } from '../../errors/index.js';
 
-const aiService = new AIImageService(config.apiKeyFreepik);
+const aiService = new AIImageService(config.ai.apiKeyFreepik);
 
-class QuickGenerationController {
   // Быстрая генерация (возвращает только task_id)
-  static async generateQuick(req, res) {
+  const generateQuick = async(req, res) => {
       const { prompt } = req.body;
 
       if (!prompt) {
@@ -17,7 +16,7 @@ class QuickGenerationController {
       }
 
       // Проверка API ключа
-      if (!config.apiKeyFreepik) {
+      if (!config.ai.apiKeyFreepik) {
         throw new ApiKeyError('API ключ не настроен в конфигурации', {
           code: 'ERR_API_KEY_MISSING'
         });
@@ -39,6 +38,5 @@ class QuickGenerationController {
         checkUrl: `/api/images/status/${task.task_id}`
       });
   }
-}
 
-export default QuickGenerationController;
+export default generateQuick;

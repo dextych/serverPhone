@@ -1,7 +1,7 @@
 // Импортируем как обычные функции, а не класс
 import { verifyToken } from '../../services/jwtService.js';
 import { findUserByGuid } from '../../repositories/user/index.js';
-import { NotFoundError } from '../../errors/index.js';
+import { NotFoundError, UnauthorizedError } from '../../errors/index.js';
 
 /**
  * Middleware для проверки JWT аутентификации
@@ -11,9 +11,8 @@ export const authMiddleware = async (req, res, next) => {
     const authHeader = req.headers.authorization;
     
     if (!authHeader) {
-      return res.status(401).json({
-        success: false,
-        error: 'Требуется авторизация. Не предоставлен токен.'
+      throw new UnauthorizedError('Требуется авторизация. Не предоставлен токен.', {
+        code: 'ERR_NO_TOKEN'
       });
     }
     

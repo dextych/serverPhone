@@ -3,11 +3,10 @@ import { config } from '../../../config/config.js';
 import { ValidationError, ApiKeyError, NotFoundError } from '../../errors/index.js';
 
 // Инициализируем сервис с ключом из .env
-const aiService = new AIImageService(config.apiKeyFreepik);
+const aiService = new AIImageService(config.ai.apiKeyFreepik);
 
-class StatusController {
   // Проверка статуса задачи
-  static async checkStatus(req, res) {
+  const checkStatus = async(req, res) => {
       const { taskId } = req.params;
 
       if (!taskId) {
@@ -17,7 +16,7 @@ class StatusController {
         });
       }
 
-      if (!config.apiKeyFreepik) {
+      if (!config.ai.apiKeyFreepik) {
         throw new ApiKeyError('API ключ не настроен в конфигурации', {
           code: 'ERR_API_KEY_MISSING'
         });
@@ -41,6 +40,5 @@ class StatusController {
         taskId: taskId
       });
   }
-}
 
-export default StatusController;
+export default checkStatus;

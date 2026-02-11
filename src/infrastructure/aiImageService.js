@@ -1,13 +1,32 @@
 import fetch from 'node-fetch';
+import { ApiKeyError } from '../errors/index.js';
+import { 
+  AiServiceError,
+  ApiKeyError,
+  GenerationError,
+  NotFoundError,
+  ValidationError
+} from '../errors/index.js';
 
 class AIImageService {
   constructor(apiKey) {
-    this.apiKey = apiKey;
-    this.baseUrl = 'https://api.freepik.com/v1/ai/mystic';
-  }
+    if (!apiKey) {
+        throw new ApiKeyError('API ключ не предоставлен при инициализации сервиса', {
+        code: 'ERR_API_KEY_MISSING'
+      });
+    }
+      this.apiKey = apiKey;
+      this.baseUrl = 'https://api.freepik.com/v1/ai/mystic';
+    }
 
   // Генерация изображения
   async generateImage(prompt, options = {}) {
+    if (!prompt) {
+       throw new ValidationError('Параметр "prompt" обязателен', {
+       code: 'ERR_PROMPT_REQUIRED'
+      });
+    }
+      
     const defaultOptions = {
       prompt: prompt,
       resolution: '2k',
@@ -35,7 +54,9 @@ class AIImageService {
     const data = await response.json();
     
     if (!response.ok) {
-      throw new Error(`AI API Error: ${data.message || 'Unknown error'}`);
+      throw new NotFoundError('Метод API не найден', {
+       code: 'ERR_API_NOT_FOUND'
+      });
     }
     
     console.log(`✅ Задача создана: ${data.data.task_id}`);
@@ -52,7 +73,7 @@ class AIImageService {
       }
     });
 
-    if(!response.ok){
+    if(!response.status){
       console.error('Ошибка при проверке статуса', response.status, response.statusText);
     }
     
@@ -81,8 +102,11 @@ class AIImageService {
         };
       }
       
-      if (status.status === 'FAILED') {
-        throw new Error('Генерация изображения не удалась');
+      if (status.status === 'FAILED' || status.status === 'failed') {
+        throw new GenerationError('Генерация изображения не удалась', {
+          code: 'ERR_GENERATION_FAILED',
+          data: status
+        });
       }
       
       // Ждем перед следующей проверкой

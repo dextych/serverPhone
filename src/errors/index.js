@@ -64,3 +64,23 @@ export class ApiKeyError extends AiServiceError {
     this.code = options.code || 'ERR_INVALID_API_KEY';
   }
 }
+
+export class InvalidCredentialsError extends UnauthorizedError {
+  constructor(message = 'Неверный email или пароль', options = {}) {
+    super(message);
+    this.name = 'InvalidCredentialsError';
+    this.code = options.code || 'ERR_INVALID_CREDENTIALS';
+  }
+}
+
+// 500+ - Ошибки сервера
+export class InternalServerError extends Error {
+  constructor(message = 'Внутренняя ошибка сервера', options = {}) {
+    super(message);
+    this.name = 'InternalServerError';
+    this.statusCode = 500;
+    this.code = options.code || 'ERR_INTERNAL';
+    
+    Error.captureStackTrace(this, this.constructor);
+  }
+}

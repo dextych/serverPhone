@@ -1,27 +1,33 @@
 import { createUser, findUserByEmail } from '../../repositories/user/index.js';
 import { generateToken } from '../../services/jwtService.js';
+import { 
+  ValidationError,
+  ConflictError,
+  InternalServerError
+} from '../../errors/index.js';
 
 const registerController = async (req, res) => {
   
   const { firstName, lastName, patronymicName, email, phone, address, password } = req.body;
-
-  // Проверка обязательных полей
+  
+  // Минимальная валидация
   if (!firstName || !lastName || !email || !password) {
-    return res.status(400).json({
-      success: false,
-      error: 'Заполните все обязательные поля'
-    });
+    throw new ValidationError('Заполните все обязательные поля');
   }
-
+  
+  if (password.length < 6) {
+    throw new ValidationError('Пароль должен содержать минимум 6 символов');
+  }
+  
   // Проверка существования пользователя
   const existingUser = await findUserByEmail(email);
   if (existingUser) {
-    return res.status(400).json({
-      success: false,
-      error: 'Пользователь с таким email уже существует'
+    throw new ConflictError('Пользователь с таким email уже существует', {
+      code: 'ERR_EMAIL_EXISTS',
+      data: { email: normalizedEmail }
     });
   }
-
+  
   // Создание пользователя
   const user = await createUser({
     firstName,
@@ -32,8 +38,6 @@ const registerController = async (req, res) => {
     address: address || null,
     password
   });
-
-  //const userJson = user.toJSON(); // Без пароля (унес в репозиторий create)
 
   // Генерация токена
   const tokenPayload = {

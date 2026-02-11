@@ -1,16 +1,27 @@
 import bcrypt from 'bcrypt';
 import { findUserByEmail } from '../../repositories/user/index.js';
 import { generateToken } from '../../services/jwtService.js';
+import { 
+  ValidationError,
+  InvalidCredentialsError
+} from '../../errors/index.js';
 
 const loginController = async (req, res) => {
-  
-  const { email, password } = req.body;
 
-  // Проверка входных данных
-  if (!email || !password) {
-    return res.status(400).json({
-      success: false,
-      error: 'Введите email и пароль'
+  const { email, password } = req.body;
+  
+  // Валидация входных данных
+  if (!email) {
+    throw new ValidationError('Email обязателен', {
+      code: 'ERR_EMAIL_REQUIRED',
+      errors: [{ field: 'email', message: 'Введите email' }]
+    });
+  }
+  
+  if (!password) {
+    throw new ValidationError('Пароль обязателен', {
+      code: 'ERR_PASSWORD_REQUIRED',
+      errors: [{ field: 'password', message: 'Введите пароль' }]
     });
   }
 
@@ -18,20 +29,15 @@ const loginController = async (req, res) => {
   const user = await findUserByEmail(email, { raw: true });
   
   if (!user) {
-    return res.status(401).json({
-      success: false,
-      error: 'Неверный email или пароль(1)'
-    });
+      // Одинаковое сообщение для безопасности (не говорим, что именно неверно)
+      throw new InvalidCredentialsError();
   }
 
   // Проверка пароля
   const isValidPassword = await bcrypt.compare(password, user.password);
   
   if (!isValidPassword) {
-    return res.status(401).json({
-      success: false,
-      error: 'Неверный email или пароль(2)'
-    });
+    throw new InvalidCredentialsError();
   }
 
   // Удаляем пароль

@@ -1,10 +1,25 @@
 import jwt from 'jsonwebtoken';
 import { config } from '../../config/config.js';
+import { 
+  ValidationError,
+  UnauthorizedError,
+  InvalidTokenError,
+  TokenExpiredError,
+  InternalServerError
+} from '../errors/index.js';
 
 export const generateToken = (payload) => {
-
-    if(!payload){
-        throw new Error('Payload не может быть пустым');
+    
+    if (!payload) {
+      throw new ValidationError('Payload не может быть пустым', {
+        code: 'ERR_PAYLOAD_EMPTY'
+      });
+    }
+    
+    if (!payload.userId) {
+      throw new ValidationError('Payload должен содержать userId', {
+        code: 'ERR_PAYLOAD_MISSING_USER_ID'
+      });
     }
 
     const token = jwt.sign(payload, config.secret, {
@@ -15,9 +30,11 @@ export const generateToken = (payload) => {
 };
 
 export const verifyToken = (token) => {
-    
-    if(!token){
-        throw new Error('Токена нет');
+
+    if (!token) {
+      throw new UnauthorizedError('Токен не предоставлен', {
+        code: 'ERR_NO_TOKEN'
+      });
     }
     const verify = jwt.verify(token, config.secret);
     return verify;

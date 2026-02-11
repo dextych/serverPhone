@@ -3,11 +3,10 @@ import { config } from '../../../config/config.js';
 import { ValidationError, ApiKeyError, GenerationError } from '../../errors/index.js';
 
 // Инициализируем сервис с ключом из .env
-const aiService = new AIImageService(config.apiKeyFreepik);
+const aiService = new AIImageService(config.ai.apiKeyFreepik);
 
-class ImageGenerationController {
   // Генерация изображения по описанию
-  static async generateFromText(req, res) {
+  const generateFromText = async(req, res) => {
       const { prompt, style, resolution = '2k' } = req.body;
       
       if (!prompt) {
@@ -18,7 +17,7 @@ class ImageGenerationController {
       }
 
       // Проверка API ключа
-      if (!config.apiKeyFreepik) {
+      if (!config.ai.apiKeyFreepik) {
         throw new ApiKeyError('API ключ не настроен в конфигурации', {
           code: 'ERR_API_KEY_MISSING'
         });
@@ -52,6 +51,5 @@ class ImageGenerationController {
         data: result
       });
   }
-}
 
-export default ImageGenerationController;
+export default generateFromText;

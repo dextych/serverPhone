@@ -1,18 +1,18 @@
 import express from 'express';
-import ImageGenerationController from '../controllers/AI/imageGeneration.js';
-import QuickGenerationController from '../controllers/AI/quickGeneration.js';
-import StatusController from '../controllers/AI/status.js';
+import generateFromText from '../controllers/AI/imageGeneration.js';
+import generateQuick from '../controllers/AI/quickGeneration.js';
+import checkStatus from '../controllers/AI/status.js';
 import authMiddleware from '../infrastructure/middleware/auth.js';
 
 const router = express.Router();
 
 // Генерация изображения по тексту
-router.post('/generate', authMiddleware, ImageGenerationController.generateFromText);
+router.post('/generate', authMiddleware, generateFromText);
 
 // Быстрая генерация (async)
-router.post('/generate-quick', authMiddleware, QuickGenerationController.generateQuick);
+router.post('/generate-quick', authMiddleware, generateQuick);
 
 // Проверка статуса
-router.get('/status/:taskId', authMiddleware, StatusController.checkStatus);
+router.get('/status/:taskId', authMiddleware, checkStatus);
 
 export default router;
