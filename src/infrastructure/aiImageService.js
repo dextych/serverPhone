@@ -1,4 +1,4 @@
-import fetch from 'node-fetch'; // нужно установить: npm install node-fetch
+import fetch from 'node-fetch';
 
 class AIImageService {
   constructor(apiKey) {
@@ -30,39 +30,35 @@ class AIImageService {
       })
     };
 
-    try {
-      console.log(`🔄 Отправляю запрос на генерацию: "${prompt}"`);
-      const response = await fetch(this.baseUrl, requestOptions);
-      const data = await response.json();
-      
-      if (!response.ok) {
-        throw new Error(`AI API Error: ${data.message || 'Unknown error'}`);
-      }
-      
-      console.log(`✅ Задача создана: ${data.data.task_id}`);
-      return data.data;
-    } catch (error) {
-      console.error('❌ Ошибка при генерации изображения:', error);
-      throw error;
+    console.log(`🔄 Отправляю запрос на генерацию: "${prompt}"`);
+    const response = await fetch(this.baseUrl, requestOptions);
+    const data = await response.json();
+    
+    if (!response.ok) {
+      throw new Error(`AI API Error: ${data.message || 'Unknown error'}`);
     }
+    
+    console.log(`✅ Задача создана: ${data.data.task_id}`);
+    return data.data;
   }
 
   // Проверка статуса задачи
   async checkTaskStatus(taskId) {
-    try {
-      const response = await fetch(`${this.baseUrl}/${taskId}`, {
-        method: 'GET',
-        headers: {
-          'x-freepik-api-key': this.apiKey
-        }
-      });
-      
-      const data = await response.json();
-      return data.data;
-    } catch (error) {
-      console.error('❌ Ошибка при проверке статуса:', error);
-      throw error;
+
+    const response = await fetch(`${this.baseUrl}/${taskId}`, {
+      method: 'GET',
+      headers: {
+        'x-freepik-api-key': this.apiKey
+      }
+    });
+
+    if(!response.ok){
+      console.error('Ошибка при проверке статуса', response.status, response.statusText);
     }
+    
+    const data = await response.json();
+    return data.data;
+
   }
 
   // Полный цикл генерации с ожиданием

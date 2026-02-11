@@ -9,8 +9,8 @@ const models = {
 const syncModels = async (options = {}) => {
   try {
     const syncOptions = {
-      alter: true, // Безопасное изменение структуры таблиц
-      force: false, // ОПАСНО: true удалит все данные и пересоздаст таблицы
+      alter: true, 
+      force: false, 
       ...options
     };
     
@@ -26,10 +26,10 @@ const syncModels = async (options = {}) => {
 const testConnection = async () => {
     try {
         await sequelize.authenticate();
-        console.log('✅ c кайфом бд');
+        console.log('test connection: true');
         return true;
     } catch (error) {
-        console.error('❌ неудача бд', error);
+        console.error('test connection: false', error);
         return false;
     }
 };  

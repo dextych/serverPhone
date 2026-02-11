@@ -1,14 +1,14 @@
 import { Sequelize } from 'sequelize';
-import { db } from '../../config/config.js';
+import { config } from '../../config/config.js';
 
 // Создание экземпляра Sequelize
 const sequelize = new Sequelize(
-  db.database,
-  db.username,
-  db.password,
+  config.database,
+  config.username,
+  config.password,
   {
-    host: db.host,
-    port: db.port,
+    host: config.host,
+    port: config.port,
     dialect: 'mysql',
     pool: {
       max: 5,

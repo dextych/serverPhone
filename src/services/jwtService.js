@@ -1,24 +1,26 @@
 import jwt from 'jsonwebtoken';
-import { jwtConfig } from '../../config/config.js';
+import { config } from '../../config/config.js';
 
 export const generateToken = (payload) => {
-    try {
-        const token = jwt.sign(payload, jwtConfig.secret, {
-            expiresIn: jwtConfig.expiresIn,
-        });
-        return token;
-    } catch (error){
-        throw new Error(`Ошибка генерации токена: ${error.message}`);
+
+    if(!payload){
+        throw new Error('Payload не может быть пустым');
     }
+
+    const token = jwt.sign(payload, config.secret, {
+        expiresIn: config.expiresIn,
+    });
+    return token;
+
 };
 
 export const verifyToken = (token) => {
-    try{
-        const verify = jwt.verify(token, jwtConfig.secret);
-        return verify;
-    } catch(error){
-        throw new Error(`Ошибка верификации токена: ${error.message}`);
+    
+    if(!token){
+        throw new Error('Токена нет');
     }
+    const verify = jwt.verify(token, config.secret);
+    return verify;
 };
 
 export const decodeToken = (token) => {

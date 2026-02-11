@@ -1,14 +1,38 @@
-import AIImageService from '../../services/aiImageService.js';
+import AIImageService from '../../infrastructure/aiImageService.js';
+import { config } from '../../../config/config.js';
+import { ValidationError, ApiKeyError, NotFoundError } from '../../errors/index.js';
 
 // Инициализируем сервис с ключом из .env
-const aiService = new AIImageService(process.env.API_KEY_FREEPIK);
+const aiService = new AIImageService(config.apiKeyFreepik);
 
 class StatusController {
   // Проверка статуса задачи
   static async checkStatus(req, res) {
-    try {
       const { taskId } = req.params;
+
+      if (!taskId) {
+        throw new ValidationError('Параметр "taskId" обязателен', {
+          code: 'ERR_TASK_ID_REQUIRED',
+          errors: [{ field: 'taskId', message: 'ID задачи обязателен' }]
+        });
+      }
+
+      if (!config.apiKeyFreepik) {
+        throw new ApiKeyError('API ключ не настроен в конфигурации', {
+          code: 'ERR_API_KEY_MISSING'
+        });
+      }
+
       const status = await aiService.checkTaskStatus(taskId);
+
+      // Проверка ответа
+      if (!status) {
+        throw new NotFoundError('Задача не найдена', {
+          code: 'ERR_TASK_NOT_FOUND',
+          resource: 'task',
+          data: { taskId }
+        });
+      }
       
       res.json({
         success: true,
@@ -16,12 +40,6 @@ class StatusController {
         imageUrl: status.generated?.[0],
         taskId: taskId
       });
-    } catch (error) {
-      res.status(500).json({
-        success: false,
-        error: error.message
-      });
-    }
   }
 }
 

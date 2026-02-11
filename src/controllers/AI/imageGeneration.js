@@ -1,18 +1,26 @@
-import AIImageService from '../../services/aiImageService.js';
+import AIImageService from '../../infrastructure/aiImageService.js';
+import { config } from '../../../config/config.js';
+import { ValidationError, ApiKeyError, GenerationError } from '../../errors/index.js';
 
 // Инициализируем сервис с ключом из .env
-const aiService = new AIImageService(process.env.API_KEY_FREEPIK);
+const aiService = new AIImageService(config.apiKeyFreepik);
 
 class ImageGenerationController {
   // Генерация изображения по описанию
   static async generateFromText(req, res) {
-    try {
       const { prompt, style, resolution = '2k' } = req.body;
       
       if (!prompt) {
-        return res.status(400).json({
-          success: false,
-          error: 'Параметр "prompt" обязателен'
+        throw new ValidationError('Параметр "prompt" обязателен', {
+          code: 'ERR_PROMPT_REQUIRED',
+          errors: [{ field: 'prompt', message: 'Описание изображения обязательно' }]
+        });
+      }
+
+      // Проверка API ключа
+      if (!config.apiKeyFreepik) {
+        throw new ApiKeyError('API ключ не настроен в конфигурации', {
+          code: 'ERR_API_KEY_MISSING'
         });
       }
       
@@ -30,20 +38,19 @@ class ImageGenerationController {
       
       // Генерация с ожиданием
       const result = await aiService.generateAndWait(prompt, options);
+
+      if (!result) {
+        throw new GenerationError('Не получен ответ от AI сервиса', {
+          code: 'ERR_EMPTY_RESPONSE',
+          data: { result }
+        });
+      }
       
       res.json({
         success: true,
         message: 'Изображение сгенерировано успешно',
         data: result
       });
-      
-    } catch (error) {
-      console.error('❌ Ошибка в контроллере:', error);
-      res.status(500).json({
-        success: false,
-        error: error.message
-      });
-    }
   }
 }
 
