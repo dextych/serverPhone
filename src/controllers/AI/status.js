@@ -6,13 +6,12 @@ import { ValidationError, ApiKeyError, NotFoundError } from '../../errors/index.
 const aiService = new AIImageService(config.ai.apiKeyFreepik);
 
   // Проверка статуса задачи
-  const checkStatus = async(req, res) => {
+  export default async(req, res) => {
       const { taskId } = req.params;
 
       if (!taskId) {
         throw new ValidationError('Параметр "taskId" обязателен', {
-          code: 'ERR_TASK_ID_REQUIRED',
-          errors: [{ field: 'taskId', message: 'ID задачи обязателен' }]
+          code: 'ERR_TASK_ID_REQUIRED'
         });
       }
 
@@ -39,6 +38,4 @@ const aiService = new AIImageService(config.ai.apiKeyFreepik);
         imageUrl: status.generated?.[0],
         taskId: taskId
       });
-  }
-
-export default checkStatus;
+  };

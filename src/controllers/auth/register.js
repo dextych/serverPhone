@@ -6,21 +6,27 @@ import {
   InternalServerError
 } from '../../errors/index.js';
 
-const registerController = async (req, res) => {
+export default async (req, res) => {
   
   const { firstName, lastName, patronymicName, email, phone, address, password } = req.body;
+
+  const normalizedEmail = email?.toLowerCase().trim();
   
   // Минимальная валидация
-  if (!firstName || !lastName || !email || !password) {
-    throw new ValidationError('Заполните все обязательные поля');
+  if (!firstName || !lastName || !normalizedEmail || !password) {
+    throw new ValidationError('Заполните все обязательные поля', {
+      code: 'ERR_REQUIRED_FIELDS_MISSING'
+    });
   }
   
   if (password.length < 6) {
-    throw new ValidationError('Пароль должен содержать минимум 6 символов');
+    throw new ValidationError('Пароль должен содержать минимум 6 символов', {
+      code: 'ERR_PASSWORD_TOO_SHORT'
+    });
   }
   
   // Проверка существования пользователя
-  const existingUser = await findUserByEmail(email);
+  const existingUser = await findUserByEmail(normalizedEmail);
   if (existingUser) {
     throw new ConflictError('Пользователь с таким email уже существует', {
       code: 'ERR_EMAIL_EXISTS',
@@ -29,11 +35,11 @@ const registerController = async (req, res) => {
   }
   
   // Создание пользователя
-  const user = await createUser({
+  const userJson = await createUser({
     firstName,
     lastName,
     patronymicName: patronymicName || null,
-    email,
+    email: normalizedEmail,
     phone: phone || null,
     address: address || null,
     password
@@ -41,10 +47,10 @@ const registerController = async (req, res) => {
 
   // Генерация токена
   const tokenPayload = {
-    userId: user.guid,
-    email: user.email,
-    firstName: user.firstName,
-    lastName: user.lastName
+    userId: userJson.guid,
+    email: userJson.email,
+    firstName: userJson.firstName,
+    lastName: userJson.lastName
   };
 
   const token = generateToken(tokenPayload);
@@ -59,7 +65,4 @@ const registerController = async (req, res) => {
       tokenType: 'Bearer'
     }
   });
-  
 };
-
-export default registerController;

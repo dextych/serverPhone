@@ -6,13 +6,12 @@ import { ValidationError, ApiKeyError, GenerationError } from '../../errors/inde
 const aiService = new AIImageService(config.ai.apiKeyFreepik);
 
   // Генерация изображения по описанию
-  const generateFromText = async(req, res) => {
+  export default async(req, res) => {
       const { prompt, style, resolution = '2k' } = req.body;
       
       if (!prompt) {
         throw new ValidationError('Параметр "prompt" обязателен', {
-          code: 'ERR_PROMPT_REQUIRED',
-          errors: [{ field: 'prompt', message: 'Описание изображения обязательно' }]
+          code: 'ERR_PROMPT_REQUIRED'
         });
       }
 
@@ -50,6 +49,4 @@ const aiService = new AIImageService(config.ai.apiKeyFreepik);
         message: 'Изображение сгенерировано успешно',
         data: result
       });
-  }
-
-export default generateFromText;
+  };

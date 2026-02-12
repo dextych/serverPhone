@@ -5,13 +5,12 @@ import { ValidationError, ApiKeyError, AiServiceError } from '../../errors/index
 const aiService = new AIImageService(config.ai.apiKeyFreepik);
 
   // Быстрая генерация (возвращает только task_id)
-  const generateQuick = async(req, res) => {
+  export default async(req, res) => {
       const { prompt } = req.body;
 
       if (!prompt) {
         throw new ValidationError('Параметр "prompt" обязателен', {
-          code: 'ERR_PROMPT_REQUIRED',
-          errors: [{ field: 'prompt', message: 'Описание изображения обязательно' }]
+          code: 'ERR_PROMPT_REQUIRED'
         });
       }
 
@@ -37,6 +36,4 @@ const aiService = new AIImageService(config.ai.apiKeyFreepik);
         taskId: task.task_id,
         checkUrl: `/api/images/status/${task.task_id}`
       });
-  }
-
-export default generateQuick;
+  };

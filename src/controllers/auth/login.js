@@ -6,22 +6,20 @@ import {
   InvalidCredentialsError
 } from '../../errors/index.js';
 
-const loginController = async (req, res) => {
+export default async (req, res) => {
 
   const { email, password } = req.body;
   
   // Валидация входных данных
   if (!email) {
     throw new ValidationError('Email обязателен', {
-      code: 'ERR_EMAIL_REQUIRED',
-      errors: [{ field: 'email', message: 'Введите email' }]
+      code: 'ERR_EMAIL_REQUIRED'
     });
   }
   
   if (!password) {
     throw new ValidationError('Пароль обязателен', {
-      code: 'ERR_PASSWORD_REQUIRED',
-      errors: [{ field: 'password', message: 'Введите пароль' }]
+      code: 'ERR_PASSWORD_REQUIRED'
     });
   }
 
@@ -30,14 +28,18 @@ const loginController = async (req, res) => {
   
   if (!user) {
       // Одинаковое сообщение для безопасности (не говорим, что именно неверно)
-      throw new InvalidCredentialsError();
+      throw new InvalidCredentialsError('Пользователь не найден', {
+        code: 'ERR_USER_NOT_FOUND'
+      });
   }
 
   // Проверка пароля
   const isValidPassword = await bcrypt.compare(password, user.password);
   
   if (!isValidPassword) {
-    throw new InvalidCredentialsError();
+    throw new InvalidCredentialsError({
+      code: 'ERR_WRONG_PASSWORD'
+    });
   }
 
   // Удаляем пароль
@@ -64,5 +66,3 @@ const loginController = async (req, res) => {
     }
   });
 };
-
-export default loginController;
