@@ -1,7 +1,12 @@
     import express from 'express';
     import { config } from './config/config.js'; 
     import { initializeDatabase } from './src/models/index.js';
-    import { imageAI, auth} from './src/routes/index.js';
+    import { imageAI, auth, image} from './src/routes/index.js';
+    import path from 'path';
+    import { fileURLToPath } from 'url';
+
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
 
     const app = express();
     app.use(express.json()); // Парсит JSON
@@ -14,6 +19,10 @@
 
     app.use('/api/imageAI', imageAI);
     app.use('/api/auth', auth);
+    app.use('/api/', image);
+
+    // Раздаём статику из папки uploads
+    app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
     const startServer = async () => {
     try {

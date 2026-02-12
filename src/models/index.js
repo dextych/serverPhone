@@ -1,9 +1,13 @@
 import sequelize from "../infrastructure/sequelize.js";
 import User from './user.model.js';
+import Image from "./image.js";
 
-const models = { User };
+const models = { 
+  User,
+  Image
+};
 
-// Единая функция инициализации
+// Единая функция инициализации 
 const initializeDatabase = async () => {
   try {
     await sequelize.sync({ alter: true });
@@ -18,6 +22,7 @@ const initializeDatabase = async () => {
 export {
     initializeDatabase,
     User,
+    Image,
     models,
     sequelize
 }

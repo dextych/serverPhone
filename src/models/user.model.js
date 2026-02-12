@@ -132,21 +132,7 @@ const User = sequelize.define('User', {
         user.updatedAt = new Date();
       }
     }
-  },
-  
-  // Индексы для оптимизации
-  indexes: [
-    {
-      unique: true,
-      fields: ['email']
-    },
-    {
-      fields: ['lastName', 'firstName']
-    },
-    {
-      fields: ['createdAt']
-    }
-  ]
+  }
 });
 
 // Метод для проверки пароля
