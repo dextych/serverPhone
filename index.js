@@ -19,7 +19,7 @@
 
     app.use('/api/imageAI', imageAI);
     app.use('/api/auth', auth);
-    app.use('/api/', image);
+    app.use('/api/image', image);
 
     // Раздаём статику из папки uploads
     app.use('/uploads', express.static(path.join(__dirname, 'uploads')));

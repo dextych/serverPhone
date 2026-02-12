@@ -1,6 +1,8 @@
 import express from 'express';
 import { uploadSingle } from '../../config/multer.js';
 import uploadController from '../controllers/image/upload.js';
+import getImage from '../controllers/image/getImage.js';
+import getUserImages from '../controllers/image/getUserImages.js';
 import { authMiddleware } from '../infrastructure/middleware/auth.js';
 
 const router = express.Router();
@@ -11,6 +13,9 @@ router.post(
   uploadSingle, 
   uploadController
 );
+
+router.get('/user', authMiddleware, getUserImages);
+router.get('/:guid', authMiddleware, getImage);
 
 
 export default router;
