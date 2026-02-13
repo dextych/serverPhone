@@ -4,6 +4,7 @@ import uploadController from '../controllers/image/upload.js';
 import getImage from '../controllers/image/getImage.js';
 import getUserImages from '../controllers/image/getUserImages.js';
 import { authMiddleware } from '../infrastructure/middleware/auth.js';
+import updateImage from '../controllers/image/update.js';
 
 const router = express.Router();
 
@@ -15,6 +16,9 @@ router.post(
 );
 
 router.get('/user', authMiddleware, getUserImages);
+router.put('/ima/:guid', authMiddleware, updateImage);
+
+
 router.get('/:guid', authMiddleware, getImage);
 
 
