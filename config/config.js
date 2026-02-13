@@ -8,15 +8,16 @@ export const config = {
     expiresIn: process.env.JWT_EXPIRES_IN || '7d',
 
     db:{
-        username: process.env.DB_USER || 'root',
-        password: process.env.DB_PASS || 'password',
-        database: process.env.DB_NAME || 'hakaton',
-        host: process.env.DB_HOST || 'localhost',
+        username: process.env.DB_USER,
+        password: process.env.DB_PASSWORD ,
+        database: process.env.DB_NAME ,
+        host: process.env.DB_HOST ,
         port: parseInt(process.env.DB_PORT) || 3306,
         dialect: 'mysql',
     },
+
     ai: {   
-    apiKeyFreepik: process.env.API_KEY_FREEPIK,
+    apiKeyFreepik: process.env.API_KEY_FREEPIK || 'FPSXb36c4bfe8a4e1b806b004012e6dc35ce',
     }
 };
 

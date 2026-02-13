@@ -20,4 +20,4 @@ RUN mkdir -p /app/uploads
 EXPOSE 5000
 
 # Запускаем сервер
-CMD ["node", "server.js"]
+CMD ["node", "index.js"]

@@ -1,0 +1,1 @@
+export {default as getCase} from './getCase.js';

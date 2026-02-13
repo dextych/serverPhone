@@ -7,6 +7,8 @@ import {
 } from '../../errors/index.js';
 
 export default async (req, res) => {
+
+  console.log(req.body);
   
   const { firstName, lastName, patronymicName, email, phone, address, password } = req.body;
 
