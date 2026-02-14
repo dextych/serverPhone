@@ -3,7 +3,7 @@ import { NotFoundError, UnauthorizedError, ValidationError } from '../../errors/
 
 export default async (req, res) => {
     const { guid } = req.params;
-    const { designName, rotation } = req.body;
+    const updateData = req.body;
 
     if (!req.user?.guid) {
       throw new UnauthorizedError('Требуется авторизация', {
@@ -12,7 +12,7 @@ export default async (req, res) => {
     }
 
     // Проверяем, что есть хоть одно поле для обновления
-    if (designName === undefined && rotation === undefined) {
+    if (Object.keys(updateData).length === 0) {
       throw new ValidationError('Нет данных для обновления', {
         code: 'ERR_NO_DATA'
       });
@@ -33,11 +33,6 @@ export default async (req, res) => {
         code: 'ERR_ACCESS_DENIED'
       });
     }
-
-    // Подготавливаем данные для обновления
-    const updateData = {};
-    if (designName !== undefined) updateData.designName = designName;
-    if (rotation !== undefined) updateData.rotation = rotation;
 
     // Обновляем
     const updatedCaseLink = await updateCaseLink(guid, updateData);

@@ -14,7 +14,7 @@ export default async (req, res) => {
     }
 
     // Если дизайн принадлежит другому пользователю — скрываем (опционально)
-    if (caseLink.userId !== req.user?.guid) {
+    if (!caseLink.isPublic && caseLink.userId !== req.user?.guid) {
       throw new UnauthorizedError('Нет доступа к этому дизайну', {
         code: 'ERR_ACCESS_DENIED'
       });

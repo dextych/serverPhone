@@ -29,26 +29,99 @@ const CaseLink = sequelize.define('CaseLink', {
     references: { model: Image, key: 'guid' }
   },
 
-  rotation: {
-    type: DataTypes.INTEGER,
-    defaultValue: 0
+  name: {
+    type: DataTypes.STRING(255),
+    allowNull: false
   },
 
-  // Название дизайна
-  designName: {
-    type: DataTypes.STRING(100),
-    defaultValue: 'Мой дизайн'
+  // Материал (JSON, не обрабатываем)
+  material: {
+    type: DataTypes.JSON,
+    allowNull: true,
+    defaultValue: null
+  },
+
+  // Модель телефона (JSON, не обрабатываем)
+  telephoneModel: {
+    type: DataTypes.JSON,
+    allowNull: true,
+    defaultValue: null
+  },
+
+  // Цвет (hex-код или название)
+  color: {
+    type: DataTypes.STRING(50),
+    allowNull: true,
+    defaultValue: '#FFFFFF'
+  },
+
+  // URL изображения (опционально)
+  fileUrl: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+
+  // Трансформации изображения (JSON, не обрабатываем)
+  imageTransform: {
+    type: DataTypes.JSON,
+    allowNull: true,
+    defaultValue: null
+  },
+
+  // Публичный ли чехол
+  isPublic: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: false
   }
 
 }, {
   tableName: 'case_links',
   timestamps: true,
+
 });
 
 // Связи
-User.belongsToMany(Case, { through: CaseLink, foreignKey: 'userId' });
-Case.belongsToMany(User, { through: CaseLink, foreignKey: 'caseId' });
+User.belongsToMany(Case, { 
+  through: CaseLink, 
+  foreignKey: 'userId',
+  otherKey: 'caseId'
+});
 
-Image.belongsToMany(CaseLink, { through: CaseLink, foreignKey: 'imageId' });
+Case.belongsToMany(User, { 
+  through: CaseLink, 
+  foreignKey: 'caseId',
+  otherKey: 'userId'
+});
+
+Image.hasMany(CaseLink, {
+  foreignKey: 'imageId',
+  as: 'caseLinks'
+});
+
+CaseLink.belongsTo(Image, {
+  foreignKey: 'imageId',
+  as: 'image'
+});
+
+Case.hasMany(CaseLink, {
+  foreignKey: 'caseId',
+  as: 'caseLinks'
+});
+
+CaseLink.belongsTo(Case, {
+  foreignKey: 'caseId',
+  as: 'case'
+});
+
+User.hasMany(CaseLink, {
+  foreignKey: 'userId',
+  as: 'caseLinks'
+});
+
+CaseLink.belongsTo(User, {
+  foreignKey: 'userId',
+  as: 'user'
+});
 
 export default CaseLink;

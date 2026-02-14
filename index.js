@@ -17,7 +17,6 @@
     res.send('Hello!');
     });
     
-
     app.use('/api/imageAI', imageAI);
     app.use('/api/auth', auth);
     app.use('/api/image', image);
