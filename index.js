@@ -1,4 +1,5 @@
     import express from 'express';
+    import cors from 'cors';
     import { config } from './config/config.js'; 
     import { initializeDatabase } from './src/models/index.js';
     import { imageAI, auth, image, caseRoutes, caseImage } from './src/routes/index.js';
