@@ -2,7 +2,7 @@
     import cors from 'cors';
     import { config } from './config/config.js'; 
     import { initializeDatabase } from './src/models/index.js';
-    import { imageAI, auth, image, caseRoutes, caseImage } from './src/routes/index.js';
+    import { imageAI, auth, image, caseRoutes } from './src/routes/index.js';
     import path from 'path';
     import { fileURLToPath } from 'url';
     import { errorHandler } from './src/infrastructure/middleware/errorHandler.js';
@@ -24,7 +24,7 @@
     app.use('/api/auth', auth);
     app.use('/api/image', image);
     app.use('/api/', caseRoutes);
-    app.use('/api/', caseImage);
+    //app.use('/api/', caseImage);
 
     // Раздаём статику из папки uploads
     app.use('/uploads', express.static(path.join(__dirname, 'uploads')));

@@ -1,4 +1,4 @@
-import { saveCaseLink } from '../../services/saveCaseImage.js';
+import { saveCase } from '../../repositories/case/index.js';
 import { UnauthorizedError } from '../../errors/index.js';
 
 export default async (req, res) => {
@@ -8,12 +8,12 @@ export default async (req, res) => {
       });
     }
 
-    const caseLinkData = req.body;
-    const result = await saveCaseLink(caseLinkData, req.user.guid);
+    const caseData = req.body;
+    const result = await saveCase(caseData, req.user.guid);
 
     res.json({
       success: true,
-      message: 'Дизайн сохранён',
+      message: 'Чехол сохранён',
       data: result
     });
 };

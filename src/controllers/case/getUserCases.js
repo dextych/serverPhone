@@ -1,18 +1,18 @@
-import { getUserCaseLinks } from '../../repositories/caseImage/index.js';
+import { getUserCases } from '../../repositories/case/index.js';
 import { UnauthorizedError } from '../../errors/index.js';
 
 export default async (req, res) => {
-    if (!req.user?.guid) {
+    if (!req.user.guid) {
       throw new UnauthorizedError('Требуется авторизация', {
         code: 'ERR_UNAUTHORIZED'
       });
     }
 
-    const caseLinks = await getUserCaseLinks(req.user.guid);
+    const cases = await getUserCases(req.user.guid);
 
     res.json({
       success: true,
-      count: caseLinks.length,
-      data: caseLinks
+      count: cases.length,
+      data: cases
     });
 };
