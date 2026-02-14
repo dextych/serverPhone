@@ -4,6 +4,7 @@
     import { imageAI, auth, image, caseRoutes, caseImage } from './src/routes/index.js';
     import path from 'path';
     import { fileURLToPath } from 'url';
+    import { errorHandler } from './src/infrastructure/middleware/errorHandler.js';
 
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = path.dirname(__filename);
@@ -25,6 +26,8 @@
 
     // Раздаём статику из папки uploads
     app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+    app.use(errorHandler);
 
     const startServer = async () => {
     try {

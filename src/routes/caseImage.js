@@ -7,7 +7,6 @@ import updateCaseLinkController from '../controllers/caseImage/update.js';
 
 const router = express.Router();
 
-// Все роуты защищены (кроме получения одного? решите сами)
 router.use(authMiddleware);
 
 router.post('/case-links', createCaseLinkController);
